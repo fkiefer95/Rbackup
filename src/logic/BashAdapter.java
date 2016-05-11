@@ -1,13 +1,17 @@
 package logic;
 
 import java.io.InputStreamReader;
+import java.text.MessageFormat;
+
 import org.apache.commons.io.*;
 /**
  * Created by flo on 11.05.16.
  */
 public class BashAdapter {
 
-    Runtime bash = Runtime.getRuntime();
+    private Runtime bash = Runtime.getRuntime();
+    private String strTemplateCommand = "rsync {0} {1} rbackup@{2}/home/backups/{3}";
+    private MessageFormat mf = new MessageFormat(strTemplateCommand);
 
     public String runCommand(String strCommand){
         //declare new Process
@@ -33,5 +37,13 @@ public class BashAdapter {
         }
 
         return strReturn;
+    }
+
+    public String executeBackubJob(BackubJob job, String params){
+        //build command String from Template
+        String strCommand = mf.format(params,job.getSource(),job.getDestination(), job.getName());
+        //execute Command and return the cmdline output
+        return runCommand(strCommand);
+
     }
 }
