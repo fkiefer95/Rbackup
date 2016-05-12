@@ -1,9 +1,8 @@
 package logic;
 
-import java.io.InputStreamReader;
-import java.text.MessageFormat;
+import org.apache.commons.io.IOUtils;
 
-import org.apache.commons.io.*;
+import java.text.MessageFormat;
 /**
  * Created by flo on 11.05.16.
  */
