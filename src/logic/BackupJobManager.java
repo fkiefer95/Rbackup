@@ -13,6 +13,10 @@ public class BackupJobManager {
         return listJobs;
     }
 
+    public BashAdapter getBashAdapter() {
+        return bashAdapter;
+    }
+
     private ArrayList<BackupJob> listJobs = null;
     private BashAdapter bashAdapter;
 
@@ -22,21 +26,7 @@ public class BackupJobManager {
         if(!fileExists("~/.Rbackup/jobs")){
 
             listJobs = new ArrayList<BackupJob>();
-
-
-            try{
-                FileOutputStream fos= new FileOutputStream("jobs");
-                ObjectOutputStream oos= new ObjectOutputStream(fos);
-                oos.writeObject(listJobs);
-                fos.close();
-                oos.close();
-            }
-            catch(Exception excSaving){
-                javax.swing.JOptionPane.showMessageDialog(null, "Fehler beim Speichern", "Fehler", JOptionPane.ERROR_MESSAGE);
-                System.exit(-1);
-            }
-
-
+            saveJobList();
         }
 
         else {
@@ -66,17 +56,22 @@ public class BackupJobManager {
 
     public void createBackubJob(String name, String src, String dst){
         listJobs.add(new BackupJob(name,src,dst,""));
+        saveJobList();
     }
 
     public void createBackubJob(String name, String src, String dst, String args){
         listJobs.add(new BackupJob(name,src,dst,args));
+        saveJobList();
     }
+    //TODO useless?
+   /** public String runBackupJob(String jobName){
+       return bashAdapter.executeBackubJob(findJobByName(jobName),strParams); }
 
-    public String runBackupJob(String jobName){
-       return bashAdapter.executeBackubJob(findJobByName(jobName),strParams);
+    **/
 
+    public String runBackubJob(int jobIndex){
+        return bashAdapter.executeBackubJob(listJobs.get(jobIndex), strParams);
     }
-
     private BackupJob findJobByName(String name){
         for(BackupJob temp : listJobs){
             if (temp.getName().equals(name)){
@@ -93,5 +88,23 @@ public class BackupJobManager {
     public void setStrParams(String strParams) {
         this.strParams = strParams;
     }
+
+    //method to save joblist
+    private void saveJobList(){
+        try{
+            FileOutputStream fos= new FileOutputStream("jobs");
+            ObjectOutputStream oos= new ObjectOutputStream(fos);
+            oos.writeObject(listJobs);
+            fos.close();
+            oos.close();
+        }
+        catch(Exception excSaving){
+            javax.swing.JOptionPane.showMessageDialog(null, "Fehler beim Speichern", "Fehler", JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        }
+    }
+
+
+
 
 }
