@@ -5,17 +5,28 @@ import java.io.Serializable;
 /**
  * Created by flo on 11.05.16.
  */
-public class BackubJob implements Serializable {
+public class BackupJob implements Serializable {
 
     private String strName;
     private String strSource;
     private String strDestination;
 
+    public String getStrCustomArguments() {
+        return strCustomArguments;
+    }
 
-    public BackubJob(String name, String src, String dst){
+    public void setStrCustomArguments(String strCustomArguments) {
+        this.strCustomArguments = strCustomArguments;
+    }
+
+    private String strCustomArguments;
+
+
+    public BackupJob(String name, String src, String dst, String args){
         this.strName = name;
         this.strSource = src;
         this.strDestination = dst;
+        this.strCustomArguments = args;
 
     }
 

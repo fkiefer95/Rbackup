@@ -38,7 +38,7 @@ public class BashAdapter {
         return strReturn;
     }
 
-    public String executeBackubJob(BackubJob job, String params){
+    public String executeBackubJob(BackupJob job, String params){
         //build command String from Template
         String strCommand = mf.format(params,job.getSource(),job.getDestination(), job.getName());
         //execute Command and return the cmdline output

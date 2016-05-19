@@ -7,18 +7,21 @@ import java.util.ArrayList;
 /**
  * Created by flo on 12.05.16.
  */
-public class BackubJobManager {
+public class BackupJobManager {
 
-    public ArrayList<BackubJob> getListJobs() {
+    public ArrayList<BackupJob> getListJobs() {
         return listJobs;
     }
 
-    private ArrayList<BackubJob> listJobs = null;
+    private ArrayList<BackupJob> listJobs = null;
+    private BashAdapter bashAdapter;
 
-    public BackubJobManager(){
+    private String strParams = "-auv";
+
+    public BackupJobManager(){
         if(!fileExists("~/.Rbackup/jobs")){
 
-            listJobs = new ArrayList<BackubJob>();
+            listJobs = new ArrayList<BackupJob>();
 
 
             try{
@@ -40,7 +43,7 @@ public class BackubJobManager {
             try {
                 FileInputStream fis = new FileInputStream("jobs");
                 ObjectInputStream ois = new ObjectInputStream(fis);
-                listJobs = (ArrayList<BackubJob>) ois.readObject();
+                listJobs = (ArrayList<BackupJob>) ois.readObject();
                 ois.close();
                 fis.close();
             }
@@ -62,8 +65,33 @@ public class BackubJobManager {
     }
 
     public void createBackubJob(String name, String src, String dst){
-        listJobs.add(new BackubJob(name,src,dst));
+        listJobs.add(new BackupJob(name,src,dst,""));
     }
 
+    public void createBackubJob(String name, String src, String dst, String args){
+        listJobs.add(new BackupJob(name,src,dst,args));
+    }
+
+    public String runBackupJob(String jobName){
+       return bashAdapter.executeBackubJob(findJobByName(jobName),strParams);
+
+    }
+
+    private BackupJob findJobByName(String name){
+        for(BackupJob temp : listJobs){
+            if (temp.getName().equals(name)){
+                return temp;
+            }
+        }
+        return null;
+    }
+
+    public String getStrParams() {
+        return strParams;
+    }
+
+    public void setStrParams(String strParams) {
+        this.strParams = strParams;
+    }
 
 }
