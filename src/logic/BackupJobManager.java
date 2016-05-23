@@ -3,6 +3,7 @@ package logic;
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by flo on 12.05.16.
@@ -13,12 +14,15 @@ public class BackupJobManager {
      * @return list of job names
      */
     public String[] getJobNames() {
-        String[] stringsJobNames = {"test"};
+        List<String> stringsJobNames = new ArrayList<String>();
+
         for (BackupJob temp : listJobs){
-            stringsJobNames[listJobs.indexOf(temp)] = temp.getName();
+            stringsJobNames.add(temp.getName());
         }
 
-        return stringsJobNames;
+        String[] arrayStringsJobNames = new String[stringsJobNames.size()];
+        arrayStringsJobNames = stringsJobNames.toArray(arrayStringsJobNames);
+        return  arrayStringsJobNames;
     }
 
     public BashAdapter getBashAdapter() {
@@ -31,15 +35,17 @@ public class BackupJobManager {
     private String strParams = "-auv";
 
     public BackupJobManager(){
-        if(!fileExists("~/.Rbackup/jobs")){
+        if(!fileExists(System.getProperty("user.home") + File.separator + ".Rbackup/jobFile")){
 
             listJobs = new ArrayList<BackupJob>();
             saveJobList();
+
+            System.out.println("neue Datei angelegt");
         }
 
         else {
             try {
-                FileInputStream fis = new FileInputStream("jobs");
+                FileInputStream fis = new FileInputStream(System.getProperty("user.home") + File.separator + ".Rbackup/jobFile");
                 ObjectInputStream ois = new ObjectInputStream(fis);
                 listJobs = (ArrayList<BackupJob>) ois.readObject();
                 ois.close();
@@ -47,6 +53,7 @@ public class BackupJobManager {
             }
             catch(Exception excLoading){
                 javax.swing.JOptionPane.showMessageDialog(null, "Fehler beim Laden", "Fehler", JOptionPane.ERROR_MESSAGE);
+                excLoading.printStackTrace();
                 System.exit(-1);
             }
         }
@@ -99,15 +106,24 @@ public class BackupJobManager {
     //method to save joblist
     private void saveJobList(){
         try{
-            FileOutputStream fos= new FileOutputStream("jobs");
+            String path = System.getProperty("user.home") + File.separator + ".Rbackup/";
+            File filePrecursor = new File(path);
+            filePrecursor.mkdirs();
+            File jobFile = new File(filePrecursor, "jobFile");
+            System.out.println(path);
+            System.out.println("file created");
+            FileOutputStream fos= new FileOutputStream(jobFile);
             ObjectOutputStream oos= new ObjectOutputStream(fos);
             oos.writeObject(listJobs);
+            System.out.println("file written");
             fos.close();
             oos.close();
         }
         catch(Exception excSaving){
             javax.swing.JOptionPane.showMessageDialog(null, "Fehler beim Speichern", "Fehler", JOptionPane.ERROR_MESSAGE);
+            excSaving.printStackTrace();
             System.exit(-1);
+
         }
     }
 

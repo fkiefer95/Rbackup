@@ -55,7 +55,7 @@ public class MainWindow {
     /**populateComboBox
      *populates the UIs Combobox with the names of the currently saved backubjobs
      */
-    public void populateComboBox(){
+    private void populateComboBox(){
         //generate array of strings filled with jobnames
         comboBoxJobs = new JComboBox(backMan.getJobNames());
     }
