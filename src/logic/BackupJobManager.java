@@ -8,9 +8,17 @@ import java.util.ArrayList;
  * Created by flo on 12.05.16.
  */
 public class BackupJobManager {
+    /**Method getJob names
+     * returns an array with the names of all the jobs
+     * @return list of job names
+     */
+    public String[] getJobNames() {
+        String[] stringsJobNames = {"test"};
+        for (BackupJob temp : listJobs){
+            stringsJobNames[listJobs.indexOf(temp)] = temp.getName();
+        }
 
-    public ArrayList<BackupJob> getListJobs() {
-        return listJobs;
+        return stringsJobNames;
     }
 
     public BashAdapter getBashAdapter() {
@@ -64,10 +72,9 @@ public class BackupJobManager {
         saveJobList();
     }
     //TODO useless?
-   /** public String runBackupJob(String jobName){
+    public String runBackupJob(String jobName){
        return bashAdapter.executeBackubJob(findJobByName(jobName),strParams); }
 
-    **/
 
     public String runBackubJob(int jobIndex){
         return bashAdapter.executeBackubJob(listJobs.get(jobIndex), strParams);

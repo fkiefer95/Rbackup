@@ -25,7 +25,7 @@ public class MainWindow {
         //set visibility
 
         //populate Combo Bux with Elements
-        comboBoxJobs = new JComboBox(backMan.getListJobs().toArray());
+        populateComboBox();
 
         //Action Listeners for the execute Button
         buttonExecute.addActionListener(new ActionListener() {
@@ -38,6 +38,8 @@ public class MainWindow {
             @Override
             public void actionPerformed(ActionEvent e) {
                 backMan.createBackubJob(textFieldJobName.getText(),textFieldJobSource.getText(),textFieldJobDestination.getText());
+                //update ComboBox
+                populateComboBox();
             }
         });
     }
@@ -48,5 +50,13 @@ public class MainWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    /**populateComboBox
+     *populates the UIs Combobox with the names of the currently saved backubjobs
+     */
+    public void populateComboBox(){
+        //generate array of strings filled with jobnames
+        comboBoxJobs = new JComboBox(backMan.getJobNames());
     }
 }
