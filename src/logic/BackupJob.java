@@ -28,9 +28,17 @@ public class BackupJob implements Serializable {
 
     }
 
+    public BackupJob(String name, String ipAddress, String src, String dst, String args){
+        this.strName = name;
+        this.strSource = src;
+        this.strDestination = "pi@"+ipAddress+"/backups"+dst;
+        this.strCustomArguments = args;
+
+    }
+
     /**Method getName
      *
-     * @return the jobb Name
+     * @return the job Name
      */
     public String getName() {
         return strName;
@@ -91,5 +99,7 @@ public class BackupJob implements Serializable {
     public void setStrCustomArguments(String strCustomArguments) {
         this.strCustomArguments = strCustomArguments;
     }
+
+
 
 }

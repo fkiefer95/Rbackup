@@ -14,7 +14,7 @@ public class BackupJobManager {
     //declare job list for use in constructor
     private ArrayList<BackupJob> listJobs = null;
     //declare instance of BashAdapter
-    private BashAdapter bashAdapter;
+    private BashAdapter bashAdapter = null;
     //initialize default Rsync parameter String
     private String strParams = "-auv";
 
@@ -22,6 +22,8 @@ public class BackupJobManager {
      * Constructor
      */
     public BackupJobManager(){
+        // initialize bashadapter
+        bashAdapter = new BashAdapter();
         if(!fileExists(System.getProperty("user.home") + File.separator + ".Rbackup/jobFile")){
 
             listJobs = new ArrayList<BackupJob>();
@@ -69,7 +71,7 @@ public class BackupJobManager {
      * @param dst backup destination path
      */
     public void createBackubJob(String name, String src, String dst){
-        listJobs.add(new BackupJob(name,src,dst,""));
+        listJobs.add(new BackupJob(name,src,dst, strParams));
         saveJobList();
     }
 
@@ -85,29 +87,35 @@ public class BackupJobManager {
         saveJobList();
     }
 
-    /**Method runBackubJob
-     * runs the backupjob with the given name
-     * @param jobName name of the job to run
-     * @return Rsync Console output
+    public void createBackupJob(String name,String ip,String src,String dst,String args){
+        listJobs.add(new BackupJob(name, ip, src,dst,args));
+        saveJobList();
+    }
+
+    /**method removeBackupJob
+     * removes a given BackupJob
+     * @param jobToRemove job to remove
      */
-    public String runBackupJob(String jobName){
-       return bashAdapter.executeBackubJob(findJobByName(jobName),strParams); }
+    public void removeBackupJob(BackupJob jobToRemove){
+        listJobs.remove(jobToRemove);
+        saveJobList();
+    }
 
     /**Method runBackubJob
      * runs the backupjob with the given Index
-     * @param jobIndex Index of the job to run
+     * @param jobToRun job to run
      * @return Rsync Console output
      */
-    public String runBackubJob(int jobIndex){
-        return bashAdapter.executeBackubJob(listJobs.get(jobIndex), strParams);
+    public String runBackubJob(BackupJob jobToRun){
+        return bashAdapter.executeBackubJob(jobToRun);
     }
 
-    /**Method findJobByName
-     * returns a backupjob if the given name fits, returns null if no one fits
+    /**Method findBackupJobByName
+     *
      * @param name the name of the desired job
-     * @return  requested BackupJob
+     * @return the job with the given name
      */
-    private BackupJob findJobByName(String name){
+    public BackupJob findJobByName(String name){
         for(BackupJob temp : listJobs){
             if (temp.getName().equals(name)){
                 return temp;
@@ -115,6 +123,7 @@ public class BackupJobManager {
         }
         return null;
     }
+
 
     /**Method getStrParams
      *
@@ -139,6 +148,22 @@ public class BackupJobManager {
     public ArrayList<BackupJob> getListJobs() {
         return listJobs;
     }
+
+    /**method getArrayJobs
+     *
+     * @return array with the same contents as listJobs
+     */
+    public BackupJob[] getArrayJobs(){
+        BackupJob[] array = new BackupJob[listJobs.size()];
+        int i = 0;
+        for (BackupJob temp : listJobs){
+            array[i] = temp;
+            i++;
+        }
+        return array;
+    }
+
+
 
     /**method getBashAdapter
      * returns the backupjobmanager's bashAdapter instance

@@ -1,6 +1,5 @@
 package UI;
 
-import logic.BackupJob;
 import logic.BackupJobManager;
 
 import javax.swing.*;
@@ -20,29 +19,27 @@ public class MainWindow {
     private JButton buttonRemove;
     private JButton buttonAdd;
     private JButton buttonExecute;
-    private JList jListJobSelector;
-    private DefaultListModel modelJobSelector = new DefaultListModel();
+    private JList jlistJobs;
 
 
     //initialization of the Backupjobmanager instance to use
     BackupJobManager backMan = new BackupJobManager();
+
 
     /**
      * Constructor
      */
     public MainWindow() {
 
-        //initialize and populate listModel
 
 
-        //initialite Jlist
-        populateJlist();
+
 
         //Action Listeners for the execute Button
         buttonExecute.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                backMan.runBackubJob(jListJobSelector.getSelectedIndex());
+            //    backMan.runBackubJob(jlistJobs.getSelectedIndex());
             }
         });
         buttonAdd.addActionListener(new ActionListener() {
@@ -50,34 +47,30 @@ public class MainWindow {
             public void actionPerformed(ActionEvent e) {
                 backMan.createBackubJob(textFieldJobName.getText(), textFieldJobSource.getText(), textFieldJobDestination.getText());
                 //update ComboBox
-                populateJlist();
+                populateComboBox();
             }
         });
     }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MainWindow");
-        frame.setContentPane(new MainWindow().panelMainWindowPanel);
+        MainWindow windowMain = new MainWindow();
+        frame.setContentPane(windowMain.panelMainWindowPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         frame.pack();
         frame.setVisible(true);
     }
 
     /**
-     * Method populateListModel
+     * Method populateComboBox
      * populates the UIs Combobox with the names of the currently saved backubjobs
      */
-    private void populateJlist() {
-        //wew lad
-        //BackupJob[] arrayJobs = backMan.getListJobs().toArray(new BackupJob[backMan.getListJobs().size()]);
-
-        for (BackupJob temp : backMan.getListJobs()){
-            modelJobSelector.addElement(temp);
-        }
-
-        jListJobSelector = new JList(modelJobSelector);
-        jListJobSelector.setCellRenderer(new BackupJobCellRenderer());
+    private void populateComboBox() {
 
 
     }
+
+
+
 }
